@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="5">
+	<Properties>
+		<Property name="logPath" >logs/takeseem-demo-vertx</Property>
+	</Properties>
+	
+	<Appenders>
+		<Console name="console">
+			<PatternLayout pattern="%d %-5p [%t] %m (%F:%L)%c.%M%n" />
+		</Console>
+		<RollingRandomAccessFile name="allFile" fileName="${logPath}/all.log" filePattern="${logPath}/all.log.%d{yyyy-MM-dd}" immediateFlush="false">
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<PatternLayout pattern="%d %-5p [%t] %m (%F:%L)%c.%M%n" />
+		</RollingRandomAccessFile>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="com.takeseem.demo" level="all"/>
+		<Logger name="io.vertx" level="debug"/>
+		
+		<Logger name="org.springframework" level="info"/>
+		<Logger name="org.springframework.transaction" level="debug"/>
+		<Logger name="org.springframework.jdbc" level="debug"/>
+		<Logger name="org.springframework.jdbc.core.JdbcTemplate" level="debug"/>
+		<Logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="info"/>
+		<Logger name="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" level="debug"/>
+		
+		<AsyncRoot level="info" includeLocation="true">
+			<AppenderRef ref="allFile" />
+			<AppenderRef ref="console" />
+		</AsyncRoot>
+	</Loggers>
+</Configuration>

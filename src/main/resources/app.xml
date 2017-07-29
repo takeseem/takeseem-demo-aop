@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		">
+		
+	<context:property-placeholder file-encoding="UTF-8" location="classpath:app.properties"/>
+	
+	<task:executor id="executor" pool-size="${task.executor:4}"/>
+	<task:scheduler id="scheduler" pool-size="${task.scheduler:4}"/>
+	<task:annotation-driven executor="executor" scheduler="scheduler"/>
+	
+	<bean name="countServiceImpl" class="com.takeseem.demo.aop.service.impl.CountServiceImpl"/>
+	
+	<bean name="countServiceInterface" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyTargetClass" value="false"/>
+		<property name="proxyInterfaces" value="com.takeseem.demo.aop.service.CountService"/>
+		<property name="targetSource">
+			<bean class="com.takeseem.demo.aop.model.MyTargetSource">
+				<constructor-arg ref="countServiceImpl"/>
+				<constructor-arg value="com.takeseem.demo.aop.service.CountService"/>
+			</bean>
+		</property>
+		<property name="opaque" value="true"/>
+	</bean>
+	
+	<bean name="countServiceClass" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyTargetClass" value="true"/>
+		<property name="targetClass" value="com.takeseem.demo.aop.service.impl.CountServiceImpl"/>
+		<property name="target" ref="countServiceImpl"/>
+		
+		<!-- frozen：性能比原始CGLIB好，和ASM Javassist相当 -->
+		<property name="frozen" value="true"/>
+	</bean>
+</beans>
