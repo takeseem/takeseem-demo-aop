@@ -53,8 +53,11 @@ public class ProxyPerformanceTest {
 
 		System.out.println("================");
 
-		for (int i = 0; i < 4; i++) {
+		ProxyPerformanceTest test = new ProxyPerformanceTest();
+		for (int i = 0; i < 10; i++) {
 			test(service, "Run NO Proxy: ");
+			test(ProxyPerformanceTest::count, "Run lambda(static): ");
+			test(test::count2, "Run lambda(this): ");
 			test(jdkProxy, "Run JDK Proxy: ");
 			test(cglibProxy, "Run CGLIB Proxy: ");
 			test(springInterfaceProxy, "Run Spring interface Proxy: ");
@@ -75,5 +78,10 @@ public class ProxyPerformanceTest {
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println(label + time + " ms, " + new DecimalFormat().format(count * 1000 / time) + " t/s");
+	}
+	
+	public static void count() {
+	}
+	public void count2() {
 	}
 }
